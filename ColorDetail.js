@@ -1,31 +1,39 @@
 import React from "react";
-import { useParams, Outlet, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
-// Define a list of valid colors or fetch it from your data source
-const validColors = ["red", "blue", "green", "yellow"]; // Add more valid colors as needed
-
-function colorIsInvalid(color) {
-  // Check if the provided color is in the list of valid colors
-  return !validColors.includes(color.toLowerCase());
-}
-
-function ColorDetail() {
-  // Get the color parameter from the URL
+const ColorDetail = ({ colors }) => {
+  // Get the 'color' parameter from the URL using useParams hook
   const { color } = useParams();
-  const navigate = useNavigate();
 
-  // Handle the case where the color doesn't exist
-  if (colorIsInvalid(color)) {
-    navigate("/colors");
+  // Find the selected color from the 'colors' array
+  const selectedColor = colors.find(
+    (c) => c.name.toLowerCase() === color.toLowerCase()
+  );
+
+  // If the selected color is not found, display a message and a link to go back
+  if (!selectedColor) {
+    return (
+      <div>
+        <p>Color not found.</p>
+        <Link to="/colors">Back to Colors</Link>
+      </div>
+    );
   }
 
+  // If the selected color is found, display its name and a colored square
   return (
     <div>
-      <h1>{color} Color</h1>
-      {/* Display the color details here */}
-      <Outlet />
+      <h2>{selectedColor.name}</h2>
+      <div
+        style={{
+          backgroundColor: selectedColor.value,
+          width: "100px",
+          height: "100px",
+        }}
+      ></div>
+      <Link to="/colors">Back to Colors</Link>
     </div>
   );
-}
+};
 
 export default ColorDetail;
